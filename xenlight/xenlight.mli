@@ -768,5 +768,6 @@ module Async : functor (S: EVENT_USERS) -> sig
 		event_disaster_callback:(S.event_user -> event_type -> string -> int -> unit) ->
 		event_hooks
 
+	external osevent_poll : ctx -> unit = "stub_libxl_osevent_poll"
 end
 

@@ -3858,6 +3858,34 @@ value stub_libxl_osevent_occurred_timeout(value ctx, value for_libxl)
 	CAMLreturn(Val_unit);
 }
 
+value stub_libxl_osevent_poll(value ctx)
+{
+	CAMLparam1(ctx);
+	int nfds;
+	int timeout;
+	struct pollfd *fds;
+	struct timeval now;
+
+	nfds = 0;
+	timeout = 5000;
+	gettimeofday(&now, NULL);
+
+	// Find out how many fds are needed.
+	libxl_osevent_beforepoll(CTX, &nfds, NULL, &timeout, now);
+
+	fds = malloc(nfds * sizeof(struct pollfd));
+	libxl_osevent_beforepoll(CTX, &nfds, fds, &timeout, now);
+
+	caml_enter_blocking_section();
+	poll(fds, nfds, timeout);
+	caml_leave_blocking_section();
+
+	libxl_osevent_afterpoll(CTX, nfds, fds, now);
+
+	free(fds);
+	CAMLreturn(Val_unit);
+}
+
 struct user_with_ctx {
 	libxl_ctx *ctx;
 	void *user;

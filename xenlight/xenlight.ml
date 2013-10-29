@@ -802,6 +802,7 @@ module Async = functor (S: EVENT_USERS) -> struct
 		event_users := EventSet.add user !event_users;
 		event_register_callbacks' ctx user
 
+	external osevent_poll : ctx -> unit = "stub_libxl_osevent_poll"
 end
 
 let _ =
